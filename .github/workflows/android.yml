@@ -16,6 +16,13 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v3
+      with:
+        packages: |
+          platform-tools
+          platforms;android-34
+          build-tools;34.0.0
     - name: Install Gradle 8.7 and generate wrapper
       run: |
         curl -sL https://services.gradle.org/distributions/gradle-8.7-bin.zip -o gradle-8.7-bin.zip
@@ -54,6 +61,13 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v3
+      with:
+        packages: |
+          platform-tools
+          platforms;android-34
+          build-tools;34.0.0
     - name: Install Gradle 8.7 and generate wrapper
       run: |
         curl -sL https://services.gradle.org/distributions/gradle-8.7-bin.zip -o gradle-8.7-bin.zip
