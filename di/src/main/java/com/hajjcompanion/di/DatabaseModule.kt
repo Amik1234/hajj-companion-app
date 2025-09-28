@@ -6,6 +6,10 @@ import com.hajjcompanion.core.data.rituals.db.AppDatabase
 import com.hajjcompanion.core.data.rituals.db.RitualDao
 import com.hajjcompanion.core.data.rituals.db.RitualProgressDao
 import com.hajjcompanion.core.data.rituals.db.RitualStepDao
+import com.hajjcompanion.core.data.rituals.Seeds
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,10 +23,16 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, "hajj_companion.db")
+    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
+        val db = Room.databaseBuilder(context, AppDatabase::class.java, "hajj_companion.db")
             .fallbackToDestructiveMigration()
             .build()
+        // Pre-seed on first launch (non-blocking)
+        CoroutineScope(Dispatchers.IO).launch {
+            Seeds.seedIfEmpty(db.ritualDao(), db.ritualStepDao())
+        }
+        return db
+    }
 
     @Provides
     fun provideRitualDao(db: AppDatabase): RitualDao = db.ritualDao()
